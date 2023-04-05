@@ -132,6 +132,21 @@ app.post("/forgot-password", async (req, res) => {
       res.status(500).json({ message: "An error occurred. Please try again later." });
     }
   });
+app.post('/payment', async (req, res) => {
+    try {
+      const { amount, token } = req.body;
+      const charge = await stripe.charges.create({
+        amount: amount,
+        currency: 'USD',
+        description: 'Payment for Product',
+        source: token.id,
+      });
+      res.status(200).json({ success: true, charge });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, error: err });
+    }
+  });
 app.listen(3001,()=>{
     console.log('server running on port no 3000')
 
